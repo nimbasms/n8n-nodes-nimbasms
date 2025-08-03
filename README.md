@@ -129,13 +129,6 @@ Before using this node, configure your Nimba SMS API credentials:
 }
 ```
 
-### Comprehensive Filtering
-Filter data across all operations:
-- **SMS History**: Filter by status, date range, or search terms
-- **Contacts**: Filter by groups, names, or phone numbers
-- **Campaigns**: Search by name or status
-- **Reports**: Filter by date ranges and sender names
-
 ## 🌍 Regional Support
 
 Optimized for African markets with:
@@ -186,9 +179,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [npm Package](https://www.npmjs.com/package/n8n-nodes-nimbasms)
 - [Nimba SMS Website](https://www.nimbasms.com)
 - [n8n Website](https://n8n.io)
-
----
-
-**Made with ❤️ for the n8n community**
-
-*This is an official community node. For official Nimba SMS integrations, please contact Nimba SMS directly.*
