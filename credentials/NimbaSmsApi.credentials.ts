@@ -26,15 +26,7 @@ export class NimbaSmsApi implements ICredentialType {
 			default: '',
 			required: true,
 			description: 'Your Nimba SMS Secret Token',
-		},
-		{
-			displayName: 'Base URL',
-			name: 'baseUrl',
-			type: 'string',
-			default: 'https://api.nimbasms.com',
-			required: true,
-			description: 'The base URL for the Nimba SMS API',
-		},
+		}
 	];
 
 	authenticate: IAuthenticateGeneric = {
@@ -49,8 +41,8 @@ export class NimbaSmsApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{$credentials.baseUrl}}',
-			url: '/v1/balance',
+			baseURL: 'https://api.nimbasms.com',
+			url: '/v1/accounts',
 			method: 'GET',
 		},
 	};

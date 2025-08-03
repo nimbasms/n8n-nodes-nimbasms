@@ -15,7 +15,6 @@ import {
 	nimbaSmsApiRequestAllItems,
 	validatePhoneNumber,
 	formatPhoneNumber,
-	validateSenderName,
 	validateMessage,
 } from './GenericFunctions';
 
@@ -63,8 +62,8 @@ export class NimbaSMS implements INodeType {
 						description: 'Manage contact groups',
 					},
 					{
-						name: 'SMS',
-						value: 'sms',
+						name: 'Message',
+						value: 'message',
 						description: 'Send and manage SMS',
 					},
 					{
@@ -78,7 +77,7 @@ export class NimbaSMS implements INodeType {
 						description: 'Manage sender names',
 					},
 				],
-				default: 'sms',
+				default: 'message',
 			},
 			...contactOperations,
 			...contactFields,
@@ -126,7 +125,7 @@ export class NimbaSMS implements INodeType {
 
 		for (let i = 0; i < length; i++) {
 			try {
-				if (resource === 'sms') {
+				if (resource === 'message') {
 					// SMS Operations
 					if (operation === 'send') {
 						const senderName = this.getNodeParameter('senderName', i) as string;
@@ -166,7 +165,7 @@ export class NimbaSMS implements INodeType {
 							message,
 						};
 
-						const responseData = await nimbaSmsApiRequest.call(this, 'POST', '/v1/messages', body);
+						const responseData = await nimbaSmsApiRequest.call(this, 'POST', '/messages', body);
 						returnData.push(responseData);
 
 					} else if (operation === 'getAll') {
@@ -183,7 +182,7 @@ export class NimbaSMS implements INodeType {
 						}
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/v1/messages', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/messages', {}, qs);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -191,13 +190,13 @@ export class NimbaSMS implements INodeType {
 							if (additionalFields.offset) {
 								qs.offset = additionalFields.offset;
 							}
-							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/messages', {}, qs);
+							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/messages', {}, qs);
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 
 					} else if (operation === 'get') {
 						const smsId = this.getNodeParameter('smsId', i) as string;
-						const responseData = await nimbaSmsApiRequest.call(this, 'GET', `/v1/messages/${smsId}`);
+						const responseData = await nimbaSmsApiRequest.call(this, 'GET', `/messages/${smsId}`);
 						returnData.push(responseData);
 					}
 
@@ -224,7 +223,7 @@ export class NimbaSMS implements INodeType {
 							body.groups = groups;
 						}
 
-						const responseData = await nimbaSmsApiRequest.call(this, 'POST', '/v1/contacts', body);
+						const responseData = await nimbaSmsApiRequest.call(this, 'POST', '/contacts', body);
 						returnData.push(responseData);
 
 					} else if (operation === 'getAll') {
@@ -238,7 +237,7 @@ export class NimbaSMS implements INodeType {
 						}
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/v1/contacts', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/contacts', {}, qs);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -246,7 +245,7 @@ export class NimbaSMS implements INodeType {
 							if (filters.offset) {
 								qs.offset = filters.offset;
 							}
-							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/contacts', {}, qs);
+							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/contacts', {}, qs);
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 					}
@@ -267,7 +266,7 @@ export class NimbaSMS implements INodeType {
 						}
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/v1/groups', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/groups', {}, qs);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -275,7 +274,7 @@ export class NimbaSMS implements INodeType {
 							if (filters.offset) {
 								qs.offset = filters.offset;
 							}
-							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/groups', {}, qs);
+							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/groups', {}, qs);
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 					}
@@ -283,83 +282,20 @@ export class NimbaSMS implements INodeType {
 				} else if (resource === 'account') {
 					// Account Operations
 					if (operation === 'getBalance') {
-						const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/accounts');
+						const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/accounts');
 						returnData.push(responseData);
-
-					} else if (operation === 'getPacks') {
-						const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/accounts');
-						returnData.push.apply(returnData, Array.isArray(responseData) ? responseData : [responseData]);
-
-					} else if (operation === 'getPurchases') {
-						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
-
-						const qs: IDataObject = {};
-
-						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/v1/accounts', {}, qs);
-							returnData.push.apply(returnData, responseData);
-						} else {
-							const limit = this.getNodeParameter('limit', i) as number;
-							qs.limit = limit;
-							if (additionalFields.offset) {
-								qs.offset = additionalFields.offset;
-							}
-							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/accounts', {}, qs);
-							returnData.push.apply(returnData, responseData.results || []);
-						}
-
-					} else if (operation === 'getConsumptions') {
-						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
-
-						const qs: IDataObject = {};
-
-						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/v1/accounts', {}, qs);
-							returnData.push.apply(returnData, responseData);
-						} else {
-							const limit = this.getNodeParameter('limit', i) as number;
-							qs.limit = limit;
-							if (additionalFields.offset) {
-								qs.offset = additionalFields.offset;
-							}
-							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/accounts', {}, qs);
-							returnData.push.apply(returnData, responseData.results || []);
-						}
 					}
 
 				} else if (resource === 'senderName') {
 					// Sender Name Operations
-					if (operation === 'create') {
-						const name = this.getNodeParameter('name', i) as string;
-
-						// Validation
-						if (!validateSenderName(name)) {
-							throw new NodeOperationError(this.getNode(), 
-								`Invalid sender name "${name}". Must be max 11 alphanumeric characters.`, { itemIndex: i });
-						}
-
-						const body: IDataObject = {
-							name,
-						};
-
-						const responseData = await nimbaSmsApiRequest.call(this, 'POST', '/v1/sendernames', body);
-						returnData.push(responseData);
-
-					} else if (operation === 'get') {
-						const senderNameId = this.getNodeParameter('senderNameId', i) as string;
-						const responseData = await nimbaSmsApiRequest.call(this, 'GET', `/v1/sendernames/${senderNameId}`);
-						returnData.push(responseData);
-
-					} else if (operation === 'getAll') {
+					if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
 
 						const qs: IDataObject = {};
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/v1/sendernames', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', '/sendernames', {}, qs);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -367,7 +303,7 @@ export class NimbaSMS implements INodeType {
 							if (additionalFields.offset) {
 								qs.offset = additionalFields.offset;
 							}
-							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/v1/sendernames', {}, qs);
+							const responseData = await nimbaSmsApiRequest.call(this, 'GET', '/sendernames', {}, qs);
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 					}

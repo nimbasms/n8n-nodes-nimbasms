@@ -8,7 +8,7 @@ export const smsOperations: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 			},
 		},
 		options: [
@@ -48,7 +48,7 @@ export const smsFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 				operation: ['send'],
 			},
 		},
@@ -62,7 +62,7 @@ export const smsFields: INodeProperties[] = [
 		type: 'string',
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 				operation: ['send'],
 			},
 		},
@@ -99,7 +99,7 @@ export const smsFields: INodeProperties[] = [
 		type: 'boolean',
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 				operation: ['getAll'],
 			},
 		},
@@ -112,7 +112,7 @@ export const smsFields: INodeProperties[] = [
 		type: 'number',
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 				operation: ['getAll'],
 				returnAll: [false],
 			},
@@ -131,7 +131,7 @@ export const smsFields: INodeProperties[] = [
 		default: {},
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 				operation: ['getAll'],
 			},
 		},
@@ -194,7 +194,7 @@ export const smsFields: INodeProperties[] = [
 		type: 'string',
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 				operation: ['get'],
 			},
 		},

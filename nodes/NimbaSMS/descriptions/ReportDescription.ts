@@ -138,65 +138,17 @@ export const senderNameOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Create',
-				value: 'create',
-				description: 'Create a new sender name',
-				action: 'Create a sender name',
-			},
-			{
-				name: 'Get',
-				value: 'get',
-				description: 'Get a sender name',
-				action: 'Get a sender name',
-			},
-			{
 				name: 'Get All',
 				value: 'getAll',
 				description: 'Get all sender names',
 				action: 'Get all sender names',
 			},
 		],
-		default: 'create',
+		default: 'getAll',
 	},
 ];
 
 export const senderNameFields: INodeProperties[] = [
-	/* -------------------------------------------------------------------------- */
-	/*                                senderName:create                          */
-	/* -------------------------------------------------------------------------- */
-	{
-		displayName: 'Name',
-		name: 'name',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['senderName'],
-				operation: ['create'],
-			},
-		},
-		default: '',
-		required: true,
-		description: 'The sender name (max 11 characters, alphanumeric only)',
-		placeholder: 'YourBrand',
-	},
-
-	/* -------------------------------------------------------------------------- */
-	/*                                senderName:get                            */
-	/* -------------------------------------------------------------------------- */
-	{
-		displayName: 'Sender Name ID',
-		name: 'senderNameId',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['senderName'],
-				operation: ['get'],
-			},
-		},
-		default: '',
-		required: true,
-		description: 'The ID of the sender name to retrieve',
-	},
 
 	/* -------------------------------------------------------------------------- */
 	/*                                senderName:getAll                         */
