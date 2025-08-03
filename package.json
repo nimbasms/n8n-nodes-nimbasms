@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-nimbasms",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Nimba SMS node for n8n - Send SMS, manage contacts, campaigns and more",
   "license": "MIT",
   "homepage": "https://github.com/nimbasms/n8n-nodes-nimbasms",
