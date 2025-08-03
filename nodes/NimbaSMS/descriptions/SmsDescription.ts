@@ -70,7 +70,13 @@ export const smsFields: INodeProperties[] = [
 				operation: ['send'],
 			},
 		},
-		default: {},
+		default: {
+			contact: [
+				{
+					phoneNumber: '',
+				},
+			],
+		},
 		required: true,
 		description: 'The recipient phone numbers (up to 50 numbers, including country code)',
 		placeholder: 'Add phone number',

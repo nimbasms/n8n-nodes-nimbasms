@@ -96,10 +96,21 @@ export class NimbaSMS implements INodeType {
 		const returnData: INodePropertyOptions[] = [];
 		
 		try {
-			const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'sendernames');
+			const credentials = await this.getCredentials('nimbaSmsApi');
+			const baseUrl = credentials.baseUrl as string;
+			const apiKey = credentials.apiKey as string;
 			
-			if (responseData.results && Array.isArray(responseData.results)) {
-				for (const senderName of responseData.results) {
+			const response = await this.helpers.httpRequest({
+				method: 'GET',
+				url: `${baseUrl}/sendernames`,
+				headers: {
+					'Authorization': `Bearer ${apiKey}`,
+					'Content-Type': 'application/json',
+				},
+			});
+			
+			if (response.results && Array.isArray(response.results)) {
+				for (const senderName of response.results) {
 					if (senderName.status === 'accepted') {
 						returnData.push({
 							name: senderName.name,
