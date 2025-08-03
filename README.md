@@ -1,48 +1,228 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-nimbasms
 
-# n8n-nodes-starter
+![npm version](https://img.shields.io/npm/v/n8n-nodes-nimbasms)
+![npm downloads](https://img.shields.io/npm/dm/n8n-nodes-nimbasms)
+![License](https://img.shields.io/badge/license-MIT-green)
+![n8n Community Node](https://img.shields.io/badge/n8n-community--node-ff6d5a)
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+A comprehensive n8n community node that integrates with the Nimba SMS API, enabling you to send SMS messages, manage contacts, create campaigns, and handle billing operations directly from your n8n workflows.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+## 🚀 Features
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+- ✅ **SMS Operations**: Send individual SMS and retrieve message history
+- ✅ **Contact Management**: Create, update, delete, and organize contacts
+- ✅ **Group Management**: Organize contacts into groups for targeted campaigns
+- ✅ **Account Operations**: Check balance, view SMS packs, and monitor usage
+- ✅ **Sender Name Management**: Manage custom sender names
 
-## Prerequisites
+## 📦 Installation
 
-You need the following installed on your development machine:
+### Option 1: Install via n8n Community Nodes (Recommended)
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+1. Open your n8n instance
+2. Go to **Settings > Community Nodes**
+3. Click **Install**
+4. Enter `n8n-nodes-nimbasms`
+5. Click **Install**
 
-## Using this starter
+### Option 2: Manual Installation
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+```bash
+# For self-hosted n8n instances
+npm install n8n-nodes-nimbasms
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+# For global n8n installation
+npm install -g n8n-nodes-nimbasms
+```
 
-## More information
+### Option 3: Docker Installation
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+Add to your n8n Docker configuration:
 
-## License
+```dockerfile
+FROM n8nio/n8n:latest
+USER root
+RUN npm install -g n8n-nodes-nimbasms
+USER node
+```
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+## 🔑 Credentials Setup
+
+Before using this node, configure your Nimba SMS API credentials:
+
+1. In n8n, go to **Credentials** and create **Nimba SMS API** credentials
+2. Fill in the required information:
+   - **Service ID (SID)**: Your Nimba SMS Service ID
+   - **Secret Token**: Your Nimba SMS Secret Token
+   - **Base URL**: Default is `https://api.nimbasms.com`
+
+> 💡 Get your credentials from your [Nimba SMS Dashboard](https://wwww.nimbasms.com/app)
+
+## 📱 Supported Operations
+
+### SMS Operations
+- **Send**: Send individual SMS messages
+- **Get Many**: Retrieve SMS history with filtering options
+- **Get**: Get details of a specific SMS message
+
+### Contact Operations
+- **Create**: Add new contacts with optional group assignment
+- **Update**: Modify contact information and group memberships
+
+### Group Operations
+- **Get**: Retrieve group details
+
+### Account Operations
+- **Get Balance**: Check your SMS credit balance
+
+### Sender Name Operations
+- **Get**: Check sender name status
+- **Get Many**: List all your sender names
+
+## 🎯 Quick Start Examples
+
+### Send a Simple SMS
+
+```json
+{
+  "resource": "sms",
+  "operation": "send",
+  "senderName": "YourBrand",
+  "contact": "+224123456789",
+  "message": "Hello from n8n! Your order has been confirmed."
+}
+```
+
+### Create a Contact with Group Assignment
+
+```json
+{
+  "resource": "contact",
+  "operation": "create",
+  "numero": "+224123456789",
+  "additionalFields": {
+    "name": "John Doe",
+    "groupes_id": "1,2,3"
+  }
+}
+```
+
+### Launch an SMS Campaign
+
+```json
+{
+  "resource": "campaign",
+  "operation": "create",
+  "name": "Welcome Campaign",
+  "senderName": "YourBrand",
+  "message": "Welcome to our service! Enjoy 20% off your first order.",
+  "groupsIds": "1,2"
+}
+```
+
+### Check Account Balance
+
+```json
+{
+  "resource": "account",
+  "operation": "getBalance"
+}
+```
+
+## 🔧 Advanced Features
+
+### Bulk Contact Import
+Upload CSV or Excel files containing contact information:
+- Automatic phone number validation and formatting
+- Group assignment during import
+- Duplicate detection and handling
+
+### Campaign Scheduling
+Schedule campaigns for optimal delivery times:
+- Set specific date and time for campaign launch
+- Monitor campaign progress and delivery status
+- Stop campaigns mid-execution if needed
+
+### Comprehensive Filtering
+Filter data across all operations:
+- **SMS History**: Filter by status, date range, or search terms
+- **Contacts**: Filter by groups, names, or phone numbers
+- **Campaigns**: Search by name or status
+- **Reports**: Filter by date ranges and sender names
+
+## 🌍 Regional Support
+
+Optimized for African markets with:
+- Guinea country code (+224) auto-formatting
+- Support for local phone number formats
+- Multilingual message support
+- Regional SMS routing optimization
+
+## 📊 Error Handling & Validation
+
+- **Phone Number Validation**: Automatic validation and formatting
+- **Message Length Validation**: Support for concatenated SMS (up to 665 characters)
+- **Sender Name Validation**: Ensures compliance with telecom regulations
+- **Credit Checking**: Prevents failed sends due to insufficient balance
+- **Rate Limiting**: Built-in respect for API rate limits
+
+## 🛠️ Compatibility
+
+- **n8n Version**: 0.190.0 or later
+- **Node.js Version**: 16.x or later
+- **API Version**: Nimba SMS API v1
+
+## 📈 Use Cases
+
+### E-commerce
+- Order confirmations and shipping notifications
+- Abandoned cart recovery campaigns
+- Customer support and feedback collection
+
+### Marketing
+- Promotional campaigns and special offers
+- Event notifications and reminders
+- Customer segmentation and targeting
+
+### Business Operations
+- Employee notifications and alerts
+- Appointment reminders
+- System status updates and monitoring
+
+### Customer Service
+- Support ticket updates
+- Account verification codes
+- Service outage notifications
+
+## 🤝 Support & Resources
+
+- **Documentation**: [Nimba SMS API Docs](https://developers.nimbasms.com)
+- **Community**: [n8n Community Forum](https://community.n8n.io)
+- **Issues**: [GitHub Issues](https://github.com/nimbasms/n8n-nodes-nimbasms/issues)
+- **Support**: Contact support@nimbasms.com for API-related questions
+
+## 📝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Links
+
+- [npm Package](https://www.npmjs.com/package/n8n-nodes-nimbasms)
+- [Nimba SMS Website](https://www.nimbasms.com)
+- [n8n Website](https://n8n.io)
+
+---
+
+**Made with ❤️ for the n8n community**
+
+*This is an unofficial community node. For official Nimba SMS integrations, please contact Nimba SMS directly.*

@@ -1,30 +1,30 @@
 {
 	"compilerOptions": {
-		"strict": true,
+		"target": "ES2019",
 		"module": "commonjs",
-		"moduleResolution": "node",
-		"target": "es2019",
-		"lib": ["es2019", "es2020", "es2022.error"],
-		"removeComments": true,
-		"useUnknownInCatchVariables": false,
-		"forceConsistentCasingInFileNames": true,
-		"noImplicitAny": true,
-		"noImplicitReturns": true,
-		"noUnusedLocals": true,
-		"strictNullChecks": true,
-		"preserveConstEnums": true,
-		"esModuleInterop": true,
-		"resolveJsonModule": true,
-		"incremental": true,
+		"lib": ["ES2019"],
 		"declaration": true,
-		"sourceMap": true,
-		"skipLibCheck": true,
-		"outDir": "./dist/",
+		"outDir": "./dist",
+		"rootDir": "./",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": false,
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true
 	},
 	"include": [
 		"credentials/**/*",
-		"nodes/**/*",
-		"nodes/**/*.json",
-		"package.json",
+		"nodes/**/*"
 	],
+	"exclude": [
+		"dist/**/*",
+		"node_modules/**/*",
+		"**/*.js"
+	]
 }

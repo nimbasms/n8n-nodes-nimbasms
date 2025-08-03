@@ -1,2 +1,30 @@
-.DS_Store
+# Source files
+nodes/
+credentials/
+*.ts
+tsconfig.json
+gulpfile.js
+
+# Development
+.git/
+.gitignore
+node_modules/
+npm-debug.log*
 *.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test files
+test/
+tests/
+*.test.js
+*.test.ts
+
+# Only include dist/ in the package
+!dist/
