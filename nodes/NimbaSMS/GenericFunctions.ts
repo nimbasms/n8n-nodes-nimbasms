@@ -82,8 +82,8 @@ export function validateEmail(email: string): boolean {
 export function validatePhoneNumber(phone: string): boolean {
 	// Remove all non-digit characters
 	const cleanPhone = phone.replace(/\D/g, '');
-	// Check if it's a valid Guinea phone number (8-12 digits)
-	return cleanPhone.length >= 8 && cleanPhone.length <= 12;
+	// Check if it's a valid Guinea phone number (8-18 digits)
+	return cleanPhone.length >= 8 && cleanPhone.length <= 18;
 }
 
 export function formatPhoneNumber(phone: string): string {
