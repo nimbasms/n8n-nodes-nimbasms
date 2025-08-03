@@ -57,19 +57,33 @@ export const smsFields: INodeProperties[] = [
 		description: 'Select the sender name from available options',
 	},
 	{
-		displayName: 'Phone Number',
+		displayName: 'Phone Numbers',
 		name: 'contact',
-		type: 'string',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+			multipleValueButtonText: 'Add Phone Number',
+		},
 		displayOptions: {
 			show: {
 				resource: ['message'],
 				operation: ['send'],
 			},
 		},
-		default: '',
+		default: {},
 		required: true,
-		description: 'The recipient phone number (including country code)',
-		placeholder: '+224123456789',
+		description: 'The recipient phone numbers (up to 50 numbers, including country code)',
+		placeholder: 'Add phone number',
+		options: [
+			{
+				displayName: 'Phone Number',
+				name: 'phoneNumber',
+				type: 'string',
+				default: '',
+				description: 'Phone number with country code',
+				placeholder: '+224623000000',
+			},
+		],
 	},
 	{
 		displayName: 'Message',
@@ -80,7 +94,7 @@ export const smsFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
-				resource: ['sms'],
+				resource: ['message'],
 				operation: ['send'],
 			},
 		},

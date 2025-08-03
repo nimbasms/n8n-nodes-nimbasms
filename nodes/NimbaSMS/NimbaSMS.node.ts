@@ -100,7 +100,7 @@ export class NimbaSMS implements INodeType {
 			
 			if (responseData.results && Array.isArray(responseData.results)) {
 				for (const senderName of responseData.results) {
-					if (senderName.status === 'approved') {
+					if (senderName.status === 'accepted') {
 						returnData.push({
 							name: senderName.name,
 							value: senderName.name,
@@ -129,11 +129,18 @@ export class NimbaSMS implements INodeType {
 					// SMS Operations
 					if (operation === 'send') {
 						const senderName = this.getNodeParameter('senderName', i) as string;
-						const contacts = this.getNodeParameter('contact', i) as string;
+						const contactsData = this.getNodeParameter('contact', i) as IDataObject;
 						const message = this.getNodeParameter('message', i) as string;
 
-						// Parse contacts string into array
-						const contactList = contacts.split(',').map(contact => contact.trim()).filter(contact => contact.length > 0);
+						// Extract phone numbers from the fixedCollection
+						const contactList: string[] = [];
+						if (contactsData.contact && Array.isArray(contactsData.contact)) {
+							for (const contact of contactsData.contact as IDataObject[]) {
+								if (contact.phoneNumber && typeof contact.phoneNumber === 'string') {
+									contactList.push(contact.phoneNumber.trim());
+								}
+							}
+						}
 						
 						if (contactList.length === 0) {
 							throw new NodeOperationError(this.getNode(), 
@@ -145,7 +152,7 @@ export class NimbaSMS implements INodeType {
 								`Too many contacts. Maximum 50 contacts allowed.`, { itemIndex: i });
 						}
 
-						// Validate each phone number
+						// Validate each phone number and format them
 						const formattedContacts = contactList.map(contact => {
 							if (!validatePhoneNumber(contact)) {
 								throw new NodeOperationError(this.getNode(), 
