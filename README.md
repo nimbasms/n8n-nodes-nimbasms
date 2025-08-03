@@ -129,20 +129,6 @@ Before using this node, configure your Nimba SMS API credentials:
 }
 ```
 
-## 🔧 Advanced Features
-
-### Bulk Contact Import
-Upload CSV or Excel files containing contact information:
-- Automatic phone number validation and formatting
-- Group assignment during import
-- Duplicate detection and handling
-
-### Campaign Scheduling
-Schedule campaigns for optimal delivery times:
-- Set specific date and time for campaign launch
-- Monitor campaign progress and delivery status
-- Stop campaigns mid-execution if needed
-
 ### Comprehensive Filtering
 Filter data across all operations:
 - **SMS History**: Filter by status, date range, or search terms
@@ -155,16 +141,6 @@ Filter data across all operations:
 Optimized for African markets with:
 - Guinea country code (+224) auto-formatting
 - Support for local phone number formats
-- Multilingual message support
-- Regional SMS routing optimization
-
-## 📊 Error Handling & Validation
-
-- **Phone Number Validation**: Automatic validation and formatting
-- **Message Length Validation**: Support for concatenated SMS (up to 665 characters)
-- **Sender Name Validation**: Ensures compliance with telecom regulations
-- **Credit Checking**: Prevents failed sends due to insufficient balance
-- **Rate Limiting**: Built-in respect for API rate limits
 
 ## 🛠️ Compatibility
 
@@ -199,17 +175,7 @@ Optimized for African markets with:
 - **Documentation**: [Nimba SMS API Docs](https://developers.nimbasms.com)
 - **Community**: [n8n Community Forum](https://community.n8n.io)
 - **Issues**: [GitHub Issues](https://github.com/nimbasms/n8n-nodes-nimbasms/issues)
-- **Support**: Contact support@nimbasms.com for API-related questions
-
-## 📝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- **Support**: Contact contact@nimbasms.com for API-related questions
 
 ## 📄 License
 
@@ -225,4 +191,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for the n8n community**
 
-*This is an unofficial community node. For official Nimba SMS integrations, please contact Nimba SMS directly.*
+*This is an official community node. For official Nimba SMS integrations, please contact Nimba SMS directly.*
