@@ -42,7 +42,10 @@ export const smsFields: INodeProperties[] = [
 	{
 		displayName: 'Sender Name',
 		name: 'senderName',
-		type: 'string',
+		type: 'options',
+		typeOptions: {
+			loadOptionsMethod: 'getSenderNames',
+		},
 		displayOptions: {
 			show: {
 				resource: ['sms'],
@@ -51,8 +54,7 @@ export const smsFields: INodeProperties[] = [
 		},
 		default: '',
 		required: true,
-		description: 'The sender name (max 11 characters, alphanumeric only)',
-		placeholder: 'YourBrand',
+		description: 'Select the sender name from available options',
 	},
 	{
 		displayName: 'Phone Number',

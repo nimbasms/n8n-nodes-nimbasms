@@ -26,7 +26,7 @@ export async function nimbaSmsApiRequest(
 		method,
 		qs,
 		body,
-		uri: uri || `${credentials.baseUrl}${resource}`,
+		uri: uri || `https://api.nimbasms.com/v1/${resource}`,
 		json: true,
 		auth: {
 			user: credentials.serviceId as string,
