@@ -6,7 +6,6 @@ import {
 	NodeOperationError,
 	IDataObject,
 	NodeConnectionType,
-	ILoadOptionsFunctions,
 	INodePropertyOptions,
 } from 'n8n-workflow';
 
@@ -92,14 +91,19 @@ export class NimbaSMS implements INodeType {
 		],
 	};
 
-	async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+	async getSenderNames(this: IExecuteFunctions): Promise<INodePropertyOptions[]> {
+		console.log('getSenderNames method called');
 		const returnData: INodePropertyOptions[] = [];
 		
 		try {
+			console.log('Getting credentials...');
 			const credentials = await this.getCredentials('nimbaSmsApi');
+			console.log('Credentials obtained:', !!credentials);
+			
 			const baseUrl = credentials.baseUrl as string;
 			const apiKey = credentials.apiKey as string;
 			
+			console.log('Making API request to:', `${baseUrl}/sendernames`);
 			const response = await this.helpers.httpRequest({
 				method: 'GET',
 				url: `${baseUrl}/sendernames`,
@@ -109,7 +113,10 @@ export class NimbaSMS implements INodeType {
 				},
 			});
 			
+			console.log('API response received:', !!response);
+			
 			if (response.results && Array.isArray(response.results)) {
+				console.log('Processing results, count:', response.results.length);
 				for (const senderName of response.results) {
 					if (senderName.status === 'accepted') {
 						returnData.push({
@@ -118,13 +125,26 @@ export class NimbaSMS implements INodeType {
 						});
 					}
 				}
+				console.log('Filtered results count:', returnData.length);
 			}
 		} catch (error) {
+			console.error('Error in getSenderNames:', error);
 			// If API call fails, return empty array
 			return [];
 		}
 		
+		console.log('Returning data:', returnData.length, 'items');
 		return returnData;
+	}
+
+	async testMethod(this: IExecuteFunctions): Promise<INodePropertyOptions[]> {
+		console.log('testMethod called');
+		return [
+			{
+				name: 'Test Option',
+				value: 'test',
+			},
+		];
 	}
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
