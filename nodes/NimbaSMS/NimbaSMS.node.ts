@@ -151,11 +151,12 @@ export class NimbaSMS implements INodeType {
 				description: 'The message content (max 665 characters)',
 			},
 			{
-				displayName: 'Contacts',
+				displayName: 'Phone Numbers',
 				name: 'contact',
 				type: 'fixedCollection',
 				typeOptions: {
 					multipleValues: true,
+					multipleValueButtonText: 'Add Phone Number',
 				},
 				displayOptions: {
 					show: {
@@ -163,26 +164,26 @@ export class NimbaSMS implements INodeType {
 						operation: ['send'],
 					},
 				},
-				default: {},
-				placeholder: 'Add Contact',
+				default: {
+					contact: [
+						{
+							phoneNumber: '',
+						},
+					],
+				},
+				required: true,
+				description: 'The recipient phone numbers (up to 50 numbers, including country code)',
+				placeholder: 'Add phone number',
 				options: [
 					{
-						name: 'contact',
-						displayName: 'Contact',
-						values: [
-							{
-								displayName: 'Phone Number',
-								name: 'phoneNumber',
-								type: 'string',
-								default: '',
-								required: true,
-								placeholder: '+224622000000',
-								description: 'Phone number in international format',
-							},
-						],
+						displayName: 'Phone Number',
+						name: 'phoneNumber',
+						type: 'string',
+						default: '',
+						description: 'Phone number with country code',
+						placeholder: '+224623000000',
 					},
 				],
-				description: 'List of phone numbers to send SMS to (max 50)',
 			},
 
 			// Spread other operations and fields
@@ -282,6 +283,50 @@ export class NimbaSMS implements INodeType {
 						};
 
 						const responseData = await nimbaSmsApiRequest.call(this, 'POST', 'messages', body);
+						returnData.push(responseData);
+
+					} else if (operation === 'verification') {
+						const senderName = this.getNodeParameter('senderName', i) as string;
+						const to = this.getNodeParameter('to', i) as string;
+						const message = this.getNodeParameter('message', i) as string;
+						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
+
+						// Validate phone number
+						if (!validatePhoneNumber(to)) {
+							throw new NodeOperationError(this.getNode(), 
+								`Invalid phone number "${to}". Please provide a valid phone number.`, { itemIndex: i });
+						}
+
+						// Validate message contains <1234> placeholder
+						if (!message.includes('<1234>')) {
+							throw new NodeOperationError(this.getNode(), 
+								`Message must contain <1234> placeholder for OTP code.`, { itemIndex: i });
+						}
+
+						// Validate message length
+						if (message.length > 153) {
+							throw new NodeOperationError(this.getNode(), 
+								`Message too long. Maximum 153 characters allowed for OTP verification.`, { itemIndex: i });
+						}
+
+						const body: IDataObject = {
+							to: formatPhoneNumber(to),
+							message,
+							sender_name: senderName,
+						};
+
+						// Add optional fields
+						if (additionalFields.expiry_time) {
+							body.expiry_time = additionalFields.expiry_time;
+						}
+						if (additionalFields.attempts) {
+							body.attempts = additionalFields.attempts;
+						}
+						if (additionalFields.code_length) {
+							body.code_length = additionalFields.code_length;
+						}
+
+						const responseData = await nimbaSmsApiRequest.call(this, 'POST', 'verifications', body);
 						returnData.push(responseData);
 
 					} else if (operation === 'getAll') {

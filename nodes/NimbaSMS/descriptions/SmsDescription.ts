@@ -19,6 +19,12 @@ export const smsOperations: INodeProperties[] = [
 				action: 'Send an SMS',
 			},
 			{
+				name: 'Verification OTP',
+				value: 'verification',
+				description: 'Send OTP verification code',
+				action: 'Send OTP verification',
+			},
+			{
 				name: 'Get Many',
 				value: 'getAll',
 				description: 'Get many SMS history',
@@ -102,6 +108,107 @@ export const smsFields: INodeProperties[] = [
 		required: true,
 		description: 'The SMS message content (max 665 characters for concatenated SMS)',
 		placeholder: 'Your message content here...',
+	},
+
+	/* -------------------------------------------------------------------------- */
+	/*                                sms:verification                           */
+	/* -------------------------------------------------------------------------- */
+	{
+		displayName: 'Sender Name',
+		name: 'senderName',
+		type: 'options',
+		typeOptions: {
+			loadOptionsMethod: 'getSenderNames',
+		},
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['verification'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'Select the sender name from available options',
+	},
+	{
+		displayName: 'Phone Number',
+		name: 'to',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['verification'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'Phone number to send OTP verification to',
+		placeholder: '+224623000000',
+	},
+	{
+		displayName: 'Message',
+		name: 'message',
+		type: 'string',
+		typeOptions: {
+			rows: 3,
+		},
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['verification'],
+			},
+		},
+		default: 'Code de confirmation Nimba SMS <1234>',
+		description: 'Message template with <1234> placeholder for OTP code',
+		placeholder: 'Votre code Nimba SMS: <1234>',
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['verification'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Expiry Time (minutes)',
+				name: 'expiry_time',
+				type: 'number',
+				typeOptions: {
+					minValue: 5,
+					maxValue: 30,
+				},
+				default: 5,
+				description: 'Duration before OTP expires (5-30 minutes)',
+			},
+			{
+				displayName: 'Attempts',
+				name: 'attempts',
+				type: 'number',
+				typeOptions: {
+					minValue: 3,
+					maxValue: 10,
+				},
+				default: 3,
+				description: 'Number of attempts allowed (3-10)',
+			},
+			{
+				displayName: 'Code Length',
+				name: 'code_length',
+				type: 'number',
+				typeOptions: {
+					minValue: 4,
+					maxValue: 8,
+				},
+				default: 4,
+				description: 'Length of the OTP code (4-8 digits)',
+			},
+		],
 	},
 
 	/* -------------------------------------------------------------------------- */
