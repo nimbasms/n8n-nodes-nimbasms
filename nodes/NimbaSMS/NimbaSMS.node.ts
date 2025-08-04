@@ -200,40 +200,27 @@ export class NimbaSMS implements INodeType {
 	methods = {
 		loadOptions: {
 			async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				const returnData: INodePropertyOptions[] = [];
+    
 				try {
-					// Essayez d'abord de récupérer depuis l'API
-					const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'sendernames');
+					const response = await nimbaSmsApiRequest.call(this, 'GET', 'sendernames');
 					
-					if (responseData && responseData.results && Array.isArray(responseData.results)) {
-						return responseData.results.map((senderName: any) => ({
-							name: senderName.name || senderName.sender_name,
-							value: senderName.name || senderName.sender_name,
-						}));
+					if (response.results && Array.isArray(response.results)) {
+						for (const senderName of response.results) {
+							if (senderName.status === 'accepted') {
+								returnData.push({
+									name: senderName.name,
+									value: senderName.name,
+								});
+							}
+						}
 					}
 				} catch (error) {
-					// Si l'API échoue, retourner des valeurs par défaut
-					console.warn('Failed to load sender names from API, using defaults:', error);
+					console.error('Error loading sender names:', error);
+					return [];
 				}
-
-				// Valeurs par défaut
-				return [
-					{
-						name: 'Nimba API',
-						value: 'Nimba API',
-					},
-					{
-						name: 'SMS',
-						value: 'SMS',
-					},
-					{
-						name: 'TEST',
-						value: 'TEST',
-					},
-					{
-						name: 'DEMO',
-						value: 'DEMO',
-					},
-				];
+				
+				return returnData;
 			},
 		},
 	};
