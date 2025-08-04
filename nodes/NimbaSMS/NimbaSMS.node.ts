@@ -18,11 +18,11 @@ import {
 	validateMessage,
 } from './GenericFunctions';
 
+// Assurez-vous que tous ces imports existent et sont corrects
 import { contactOperations, contactFields } from './descriptions/ContactDescription';
 import { groupOperations, groupFields } from './descriptions/GroupDescription';
 import { smsOperations, smsFields } from './descriptions/SmsDescription';
 import { accountOperations, accountFields } from './descriptions/AccountDescription';
-import { senderNameOperations, senderNameFields } from './descriptions/ReportDescription';
 
 export class NimbaSMS implements INodeType {
 	description: INodeTypeDescription = {
@@ -32,7 +32,7 @@ export class NimbaSMS implements INodeType {
 		group: ['communication'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Interact with Nimba SMS API',
+		description: 'Send SMS, manage campaigns, and track delivery reports using the Nimba SMS API with ease.',
 		defaults: {
 			name: 'Nimba SMS',
 		},
@@ -45,12 +45,18 @@ export class NimbaSMS implements INodeType {
 			},
 		],
 		properties: [
+			// Resource selector
 			{
 				displayName: 'Resource',
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
 				options: [
+					{
+						name: 'Message',
+						value: 'message',
+						description: 'Send and manage SMS',
+					},
 					{
 						name: 'Contact',
 						value: 'contact',
@@ -60,11 +66,6 @@ export class NimbaSMS implements INodeType {
 						name: 'Group',
 						value: 'group',
 						description: 'Manage contact groups',
-					},
-					{
-						name: 'Message',
-						value: 'message',
-						description: 'Send and manage SMS',
 					},
 					{
 						name: 'Account',
@@ -79,6 +80,112 @@ export class NimbaSMS implements INodeType {
 				],
 				default: 'message',
 			},
+
+			// Message Operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['message'],
+					},
+				},
+				options: [
+					{
+						name: 'Send SMS',
+						value: 'send',
+						description: 'Send an SMS message',
+						action: 'Send an SMS message',
+					},
+					{
+						name: 'Get All Messages',
+						value: 'getAll',
+						description: 'Get all SMS messages',
+						action: 'Get all SMS messages',
+					},
+					{
+						name: 'Get Message',
+						value: 'get',
+						description: 'Get a specific SMS message',
+						action: 'Get a SMS message',
+					},
+				],
+				default: 'send',
+			},
+
+			// Send SMS Fields
+			{
+				displayName: 'Sender Name',
+				name: 'senderName',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getSenderNames',
+				},
+				displayOptions: {
+					show: {
+						resource: ['message'],
+						operation: ['send'],
+					},
+				},
+				default: '',
+				required: true,
+				description: 'The sender name to use for the SMS',
+			},
+			{
+				displayName: 'Message',
+				name: 'message',
+				type: 'string',
+				typeOptions: {
+					rows: 4,
+				},
+				displayOptions: {
+					show: {
+						resource: ['message'],
+						operation: ['send'],
+					},
+				},
+				default: '',
+				required: true,
+				description: 'The message content (max 665 characters)',
+			},
+			{
+				displayName: 'Contacts',
+				name: 'contact',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['message'],
+						operation: ['send'],
+					},
+				},
+				default: {},
+				placeholder: 'Add Contact',
+				options: [
+					{
+						name: 'contact',
+						displayName: 'Contact',
+						values: [
+							{
+								displayName: 'Phone Number',
+								name: 'phoneNumber',
+								type: 'string',
+								default: '',
+								required: true,
+								placeholder: '+224622000000',
+								description: 'Phone number in international format',
+							},
+						],
+					},
+				],
+				description: 'List of phone numbers to send SMS to (max 50)',
+			},
+
+			// Spread other operations and fields
 			...contactOperations,
 			...contactFields,
 			...groupOperations,
@@ -87,38 +194,49 @@ export class NimbaSMS implements INodeType {
 			...smsFields,
 			...accountOperations,
 			...accountFields,
-			...senderNameOperations,
-			...senderNameFields,
 		],
 	};
 
 	methods = {
-        loadOptions: {
-            getSenderNames: this.getSenderNames,
-        },
-    };
+		loadOptions: {
+			async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				try {
+					// Essayez d'abord de récupérer depuis l'API
+					const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'sendernames');
+					
+					if (responseData && responseData.results && Array.isArray(responseData.results)) {
+						return responseData.results.map((senderName: any) => ({
+							name: senderName.name || senderName.sender_name,
+							value: senderName.name || senderName.sender_name,
+						}));
+					}
+				} catch (error) {
+					// Si l'API échoue, retourner des valeurs par défaut
+					console.warn('Failed to load sender names from API, using defaults:', error);
+				}
 
-	async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-		// Return static list for testing
-		return [
-			{
-				name: 'Nimba API',
-				value: 'Nimba API',
+				// Valeurs par défaut
+				return [
+					{
+						name: 'Nimba API',
+						value: 'Nimba API',
+					},
+					{
+						name: 'SMS',
+						value: 'SMS',
+					},
+					{
+						name: 'TEST',
+						value: 'TEST',
+					},
+					{
+						name: 'DEMO',
+						value: 'DEMO',
+					},
+				];
 			},
-			{
-				name: 'SMS',
-				value: 'SMS',
-			},
-			{
-				name: 'TEST',
-				value: 'TEST',
-			},
-			{
-				name: 'DEMO',
-				value: 'DEMO',
-			},
-		];
-	}
+		},
+	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
@@ -309,7 +427,7 @@ export class NimbaSMS implements INodeType {
 							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', 'sendernames', {}, qs);
 							returnData.push.apply(returnData, responseData);
 						} else {
-							const limit = this.getNodeParameter('limit', i) as number;
+							const limit = this.getNodeParameter('limit', i) as number;  
 							qs.limit = limit;
 							if (additionalFields.offset) {
 								qs.offset = additionalFields.offset;
