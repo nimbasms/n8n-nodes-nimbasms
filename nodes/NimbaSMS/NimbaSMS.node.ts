@@ -99,27 +99,25 @@ export class NimbaSMS implements INodeType {
     };
 
 	async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-		const returnData: INodePropertyOptions[] = [];
-		
-		try {
-			const response = await nimbaSmsApiRequest.call(this, 'GET', 'sendernames');
-			
-			if (response.results && Array.isArray(response.results)) {
-				for (const senderName of response.results) {
-					if (senderName.status === 'accepted') {
-						returnData.push({
-							name: senderName.name,
-							value: senderName.name,
-						});
-					}
-				}
-			}
-		} catch (error) {
-			console.error('Error loading sender names:', error);
-			return [];
-		}
-		
-		return returnData;
+		// Return static list for testing
+		return [
+			{
+				name: 'Nimba API',
+				value: 'Nimba API',
+			},
+			{
+				name: 'SMS',
+				value: 'SMS',
+			},
+			{
+				name: 'TEST',
+				value: 'TEST',
+			},
+			{
+				name: 'DEMO',
+				value: 'DEMO',
+			},
+		];
 	}
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
