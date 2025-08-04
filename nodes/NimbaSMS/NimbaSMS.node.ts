@@ -93,59 +93,17 @@ export class NimbaSMS implements INodeType {
 	};
 
 	async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-		console.log('getSenderNames method called');
-		const returnData: INodePropertyOptions[] = [];
-		
-		try {
-			console.log('Getting credentials...');
-			const credentials = await this.getCredentials('nimbaSmsApi');
-			console.log('Credentials obtained:', !!credentials);
-			
-			if (!credentials) {
-				console.log('No credentials found, returning empty array');
-				return [];
-			}
-			
-			const baseUrl = credentials.baseUrl as string;
-			const apiKey = credentials.apiKey as string;
-			
-			if (!baseUrl || !apiKey) {
-				console.log('Missing baseUrl or apiKey, returning empty array');
-				return [];
-			}
-			
-			console.log('Making API request to:', `${baseUrl}/sendernames`);
-			const response = await this.helpers.httpRequest({
-				method: 'GET',
-				url: `${baseUrl}/sendernames`,
-				headers: {
-					'Authorization': `Bearer ${apiKey}`,
-					'Content-Type': 'application/json',
-				},
-			});
-			
-			console.log('API response received:', !!response);
-			
-			if (response.results && Array.isArray(response.results)) {
-				console.log('Processing results, count:', response.results.length);
-				for (const senderName of response.results) {
-					if (senderName.status === 'accepted') {
-						returnData.push({
-							name: senderName.name,
-							value: senderName.name,
-						});
-					}
-				}
-				console.log('Filtered results count:', returnData.length);
-			}
-		} catch (error) {
-			console.error('Error in getSenderNames:', error);
-			// If API call fails, return empty array
-			return [];
-		}
-		
-		console.log('Returning data:', returnData.length, 'items');
-		return returnData;
+		// Return some test options for now
+		return [
+			{
+				name: 'Test Sender 1',
+				value: 'TestSender1',
+			},
+			{
+				name: 'Test Sender 2', 
+				value: 'TestSender2',
+			},
+		];
 	}
 
 	async testMethod(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
