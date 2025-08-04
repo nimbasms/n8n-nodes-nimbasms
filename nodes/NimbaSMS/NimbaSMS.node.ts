@@ -6,6 +6,7 @@ import {
 	NodeOperationError,
 	IDataObject,
 	NodeConnectionType,
+	ILoadOptionsFunctions,
 	INodePropertyOptions,
 } from 'n8n-workflow';
 
@@ -91,7 +92,7 @@ export class NimbaSMS implements INodeType {
 		],
 	};
 
-	async getSenderNames(this: IExecuteFunctions): Promise<INodePropertyOptions[]> {
+	async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 		console.log('getSenderNames method called');
 		const returnData: INodePropertyOptions[] = [];
 		
@@ -100,8 +101,18 @@ export class NimbaSMS implements INodeType {
 			const credentials = await this.getCredentials('nimbaSmsApi');
 			console.log('Credentials obtained:', !!credentials);
 			
+			if (!credentials) {
+				console.log('No credentials found, returning empty array');
+				return [];
+			}
+			
 			const baseUrl = credentials.baseUrl as string;
 			const apiKey = credentials.apiKey as string;
+			
+			if (!baseUrl || !apiKey) {
+				console.log('Missing baseUrl or apiKey, returning empty array');
+				return [];
+			}
 			
 			console.log('Making API request to:', `${baseUrl}/sendernames`);
 			const response = await this.helpers.httpRequest({
@@ -137,7 +148,7 @@ export class NimbaSMS implements INodeType {
 		return returnData;
 	}
 
-	async testMethod(this: IExecuteFunctions): Promise<INodePropertyOptions[]> {
+	async testMethod(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 		console.log('testMethod called');
 		return [
 			{
