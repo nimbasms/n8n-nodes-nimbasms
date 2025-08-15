@@ -2,8 +2,8 @@ import { INodeProperties } from 'n8n-workflow';
 
 export const contactOperations: INodeProperties[] = [
 	{
-		displayName: 'Contact Operation',
-		name: 'contactOperation',
+		displayName: 'Operation',
+		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
 		displayOptions: {
