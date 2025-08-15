@@ -191,7 +191,7 @@ export class NimbaSMS implements INodeType {
 					} else if (operation === 'verification') {
 						const senderName = this.getNodeParameter('senderNameVerification', i) as string;
 						const to = this.getNodeParameter('to', i) as string;
-						const message = this.getNodeParameter('message', i) as string;
+						const message = this.getNodeParameter('messageVerification', i) as string;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
 
 						// Validate phone number
@@ -234,7 +234,7 @@ export class NimbaSMS implements INodeType {
 
 					} else if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
+						const additionalFields = this.getNodeParameter('additionalFieldsGetAll', i) as IDataObject;
 
 						const qs: IDataObject = {};
 

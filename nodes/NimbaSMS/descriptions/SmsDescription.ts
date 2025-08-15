@@ -77,11 +77,7 @@ export const smsFields: INodeProperties[] = [
 			},
 		},
 		default: {
-			contact: [
-				{
-					phoneNumber: '',
-				},
-			],
+			contact: [],
 		},
 		required: true,
 		description: 'The recipient phone numbers (up to 50 numbers, including country code)',
@@ -153,7 +149,7 @@ export const smsFields: INodeProperties[] = [
 	},
 	{
 		displayName: 'Message',
-		name: 'message',
+		name: 'messageVerification',
 		type: 'string',
 		typeOptions: {
 			rows: 3,
@@ -252,7 +248,7 @@ export const smsFields: INodeProperties[] = [
 	},
 	{
 		displayName: 'Additional Fields',
-		name: 'additionalFields',
+		name: 'additionalFieldsGetAll',
 		type: 'collection',
 		placeholder: 'Add Field',
 		default: {},
