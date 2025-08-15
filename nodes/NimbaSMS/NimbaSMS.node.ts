@@ -23,6 +23,7 @@ import { contactOperations, contactFields } from './descriptions/ContactDescript
 import { groupOperations, groupFields } from './descriptions/GroupDescription';
 import { smsOperations, smsFields } from './descriptions/SmsDescription';
 import { accountOperations, accountFields } from './descriptions/AccountDescription';
+import { purchaseOperations, purchaseFields } from './descriptions/PurchaseDescription';
 
 export class NimbaSMS implements INodeType {
 	description: INodeTypeDescription = {
@@ -73,6 +74,11 @@ export class NimbaSMS implements INodeType {
 						description: 'Account information and billing',
 					},
 					{
+						name: 'Purchase',
+						value: 'purchase',
+						description: 'View purchase history and invoices',
+					},
+					{
 						name: 'Sender Name',
 						value: 'senderName',
 						description: 'Manage sender names',
@@ -81,120 +87,17 @@ export class NimbaSMS implements INodeType {
 				default: 'message',
 			},
 
-			// Message Operations
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				noDataExpression: true,
-				displayOptions: {
-					show: {
-						resource: ['message'],
-					},
-				},
-				options: [
-					{
-						name: 'Send SMS',
-						value: 'send',
-						description: 'Send an SMS message',
-						action: 'Send an SMS message',
-					},
-					{
-						name: 'Get All Messages',
-						value: 'getAll',
-						description: 'Get all SMS messages',
-						action: 'Get all SMS messages',
-					},
-					{
-						name: 'Get Message',
-						value: 'get',
-						description: 'Get a specific SMS message',
-						action: 'Get a SMS message',
-					},
-				],
-				default: 'send',
-			},
-
-			// Send SMS Fields
-			{
-				displayName: 'Sender Name',
-				name: 'senderName',
-				type: 'options',
-				typeOptions: {
-					loadOptionsMethod: 'getSenderNames',
-				},
-				displayOptions: {
-					show: {
-						resource: ['message'],
-						operation: ['send'],
-					},
-				},
-				default: '',
-				required: true,
-				description: 'The sender name to use for the SMS',
-			},
-			{
-				displayName: 'Message',
-				name: 'message',
-				type: 'string',
-				typeOptions: {
-					rows: 4,
-				},
-				displayOptions: {
-					show: {
-						resource: ['message'],
-						operation: ['send'],
-					},
-				},
-				default: '',
-				required: true,
-				description: 'The message content (max 665 characters)',
-			},
-			{
-				displayName: 'Phone Numbers',
-				name: 'contact',
-				type: 'fixedCollection',
-				typeOptions: {
-					multipleValues: true,
-					multipleValueButtonText: 'Add Phone Number',
-				},
-				displayOptions: {
-					show: {
-						resource: ['message'],
-						operation: ['send'],
-					},
-				},
-				default: {
-					contact: [
-						{
-							phoneNumber: '',
-						},
-					],
-				},
-				required: true,
-				description: 'The recipient phone numbers (up to 50 numbers, including country code)',
-				placeholder: 'Add phone number',
-				options: [
-					{
-						displayName: 'Phone Number',
-						name: 'phoneNumber',
-						type: 'string',
-						default: '',
-						description: 'Phone number with country code',
-						placeholder: '+224623000000',
-					},
-				],
-			},
-
-			// Spread other operations and fields
+			// Combine all operations and fields from description files
+			...smsOperations,
+			...smsFields,
 			...contactOperations,
 			...contactFields,
 			...groupOperations,
 			...groupFields,
-			...smsOperations,
-			...smsFields,
 			...accountOperations,
 			...accountFields,
+			...purchaseOperations,
+			...purchaseFields,
 		],
 	};
 
@@ -286,7 +189,7 @@ export class NimbaSMS implements INodeType {
 						returnData.push(responseData);
 
 					} else if (operation === 'verification') {
-						const senderName = this.getNodeParameter('senderName', i) as string;
+						const senderName = this.getNodeParameter('senderNameVerification', i) as string;
 						const to = this.getNodeParameter('to', i) as string;
 						const message = this.getNodeParameter('message', i) as string;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
@@ -444,6 +347,43 @@ export class NimbaSMS implements INodeType {
 					// Account Operations
 					if (operation === 'getBalance') {
 						const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'accounts');
+						returnData.push(responseData);
+					}
+
+				} else if (resource === 'purchase') {
+					// Purchase Operations
+					if (operation === 'getAll') {
+						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
+						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
+
+						const qs: IDataObject = {};
+
+						if (additionalFields.payment_type) {
+							qs.payment_type = additionalFields.payment_type;
+						}
+						if (additionalFields.start_date) {
+							qs.start_date = additionalFields.start_date;
+						}
+						if (additionalFields.end_date) {
+							qs.end_date = additionalFields.end_date;
+						}
+
+						if (returnAll) {
+							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', 'purchases', {}, qs);
+							returnData.push.apply(returnData, responseData);
+						} else {
+							const limit = this.getNodeParameter('limit', i) as number;
+							qs.limit = limit;
+							if (additionalFields.offset) {
+								qs.offset = additionalFields.offset;
+							}
+							const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'purchases', {}, qs);
+							returnData.push.apply(returnData, responseData.results || []);
+						}
+
+					} else if (operation === 'get') {
+						const purchaseUid = this.getNodeParameter('purchaseUid', i) as string;
+						const responseData = await nimbaSmsApiRequest.call(this, 'GET', `/purchases/${purchaseUid}`);
 						returnData.push(responseData);
 					}
 

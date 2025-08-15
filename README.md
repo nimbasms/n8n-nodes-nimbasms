@@ -13,6 +13,7 @@ A comprehensive n8n community node that integrates with the Nimba SMS API, enabl
 - ✅ **Contact Management**: Create, update, delete, and organize contacts
 - ✅ **Group Management**: Organize contacts into groups for targeted campaigns
 - ✅ **Account Operations**: Check balance, view SMS packs, and monitor usage
+- ✅ **Purchase Management**: View purchase history and invoices
 - ✅ **Sender Name Management**: Manage custom sender names
 
 ## 📦 Installation
@@ -75,6 +76,10 @@ Before using this node, configure your Nimba SMS API credentials:
 ### Account Operations
 - **Get Balance**: Check your SMS credit balance
 
+### Purchase Operations
+- **Get All**: Retrieve purchase history with filtering options
+- **Get**: Get details of a specific purchase by UID
+
 ### Sender Name Operations
 - **Get**: Check sender name status
 - **Get Many**: List all your sender names
@@ -90,6 +95,32 @@ Before using this node, configure your Nimba SMS API credentials:
   "senderName": "YourBrand",
   "contact": "+224123456789",
   "message": "Hello from n8n! Your order has been confirmed."
+}
+```
+
+### Get Purchase History
+
+```json
+{
+  "resource": "purchase",
+  "operation": "getAll",
+  "returnAll": false,
+  "limit": 10,
+  "additionalFields": {
+    "payment_type": "Orange",
+    "start_date": "2024-01-01T00:00:00Z",
+    "end_date": "2024-12-31T23:59:59Z"
+  }
+}
+```
+
+### Get Specific Purchase Details
+
+```json
+{
+  "resource": "purchase",
+  "operation": "get",
+  "purchaseUid": "07cc67f4-45d6-494b-adac-09b5cbc7e2b5"
 }
 ```
 

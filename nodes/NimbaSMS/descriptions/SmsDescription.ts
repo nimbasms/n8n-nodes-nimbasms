@@ -76,7 +76,13 @@ export const smsFields: INodeProperties[] = [
 				operation: ['send'],
 			},
 		},
-		default: '',
+		default: {
+			contact: [
+				{
+					phoneNumber: '',
+				},
+			],
+		},
 		required: true,
 		description: 'The recipient phone numbers (up to 50 numbers, including country code)',
 		placeholder: 'Add phone number',
@@ -115,7 +121,7 @@ export const smsFields: INodeProperties[] = [
 	/* -------------------------------------------------------------------------- */
 	{
 		displayName: 'Sender Name',
-		name: 'senderName',
+		name: 'senderNameVerification',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getSenderNames',
@@ -160,7 +166,7 @@ export const smsFields: INodeProperties[] = [
 		},
 		default: 'Code de confirmation Nimba SMS <1234>',
 		description: 'Message template with <1234> placeholder for OTP code',
-		placeholder: 'Votre code Nimba SMS: <1234>',
+		placeholder: 'Code confirmation Nimba SMS <1234>',
 	},
 	{
 		displayName: 'Additional Fields',
