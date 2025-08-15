@@ -2,8 +2,8 @@ import { INodeProperties } from 'n8n-workflow';
 
 export const purchaseOperations: INodeProperties[] = [
 	{
-		displayName: 'Operation',
-		name: 'operation',
+		displayName: 'Purchase Operation',
+		name: 'purchaseOperation',
 		type: 'options',
 		noDataExpression: true,
 		displayOptions: {

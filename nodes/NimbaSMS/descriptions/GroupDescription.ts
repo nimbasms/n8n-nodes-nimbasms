@@ -2,8 +2,8 @@ import { INodeProperties } from 'n8n-workflow';
 
 export const groupOperations: INodeProperties[] = [
 	{
-		displayName: 'Operation',
-		name: 'operation',
+		displayName: 'Group Operation',
+		name: 'groupOperation',
 		type: 'options',
 		noDataExpression: true,
 		displayOptions: {

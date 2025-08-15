@@ -266,7 +266,8 @@ export class NimbaSMS implements INodeType {
 
 				} else if (resource === 'contact') {
 					// Contact Operations
-					if (operation === 'create') {
+					const contactOperation = this.getNodeParameter('contactOperation', i) as string;
+					if (contactOperation === 'create') {
 						const numero = this.getNodeParameter('numero', i) as string;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
 
@@ -290,7 +291,7 @@ export class NimbaSMS implements INodeType {
 						const responseData = await nimbaSmsApiRequest.call(this, 'POST', 'contacts', body);
 						returnData.push(responseData);
 
-					} else if (operation === 'getAll') {
+					} else if (contactOperation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const filters = this.getNodeParameter('filters', i) as IDataObject;
 
@@ -316,7 +317,8 @@ export class NimbaSMS implements INodeType {
 
 				} else if (resource === 'group') {
 					// Group Operations
-					if (operation === 'getAll') {
+					const groupOperation = this.getNodeParameter('groupOperation', i) as string;
+					if (groupOperation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const filters = this.getNodeParameter('filters', i) as IDataObject;
 
@@ -345,14 +347,16 @@ export class NimbaSMS implements INodeType {
 
 				} else if (resource === 'account') {
 					// Account Operations
-					if (operation === 'getBalance') {
+					const accountOperation = this.getNodeParameter('accountOperation', i) as string;
+					if (accountOperation === 'getBalance') {
 						const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'accounts');
 						returnData.push(responseData);
 					}
 
 				} else if (resource === 'purchase') {
 					// Purchase Operations
-					if (operation === 'getAll') {
+					const purchaseOperation = this.getNodeParameter('purchaseOperation', i) as string;
+					if (purchaseOperation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
 
@@ -381,7 +385,7 @@ export class NimbaSMS implements INodeType {
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 
-					} else if (operation === 'get') {
+					} else if (purchaseOperation === 'get') {
 						const purchaseUid = this.getNodeParameter('purchaseUid', i) as string;
 						const responseData = await nimbaSmsApiRequest.call(this, 'GET', `/purchases/${purchaseUid}`);
 						returnData.push(responseData);
