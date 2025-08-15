@@ -61,6 +61,7 @@ export const smsFields: INodeProperties[] = [
 		default: '',
 		required: true,
 		description: 'Select the sender name from available options',
+		noDataExpression: true,
 	},
 	{
 		displayName: 'Phone Numbers',
@@ -135,6 +136,7 @@ export const smsFields: INodeProperties[] = [
 		default: '',
 		required: true,
 		description: 'Select the sender name from available options',
+		noDataExpression: true,
 	},
 	{
 		displayName: 'Phone Number',
@@ -298,6 +300,7 @@ export const smsFields: INodeProperties[] = [
 				],
 				default: 'sent',
 				description: 'Filter by SMS status',
+				noDataExpression: true,
 			},
 			{
 				displayName: 'Offset',
