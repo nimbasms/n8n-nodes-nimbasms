@@ -19,11 +19,12 @@
     "format": "prettier nodes credentials index.ts tests --write",
     "lint": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" \"index.ts\" \"tests/**/*.ts\"",
     "lintfix": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" \"index.ts\" \"tests/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:ci": "jest --coverage --watchAll=false",
-    "prepublishOnly": "npm run build && npm run test:ci"
+    		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage",
+		"test:ci": "jest --coverage --watchAll=false",
+		"dev:reload": "./dev-reload.sh",
+		"prepublishOnly": "npm run build && npm run test:ci"
   },
   "files": [
     "dist",
