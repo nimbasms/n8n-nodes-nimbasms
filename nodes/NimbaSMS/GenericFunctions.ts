@@ -16,7 +16,7 @@ export async function nimbaSmsApiRequest(
 	qs: IDataObject = {},
 	uri?: string,
 	option: IDataObject = {},
-): Promise<any> {
+): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
 	const credentials = await this.getCredentials('nimbaSmsApi');
 
 	let options: IRequestOptions = {
@@ -54,7 +54,7 @@ export async function nimbaSmsApiRequestAllItems(
 	endpoint: string,
 	body: IDataObject = {},
 	query: IDataObject = {},
-): Promise<any> {
+): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
 	const returnData: IDataObject[] = [];
 
 	let responseData;

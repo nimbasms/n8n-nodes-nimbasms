@@ -21,7 +21,8 @@
 	"include": [
 		"credentials/**/*",
 		"nodes/**/*",
-		"index.ts"
+		"index.ts",
+		"tests/**/*"
 	],
 	"exclude": [
 		"dist/**/*",
