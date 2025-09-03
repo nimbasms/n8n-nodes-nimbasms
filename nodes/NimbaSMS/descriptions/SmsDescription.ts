@@ -90,24 +90,23 @@ export const smsFields: INodeProperties[] = [
 				operation: ['send'],
 			},
 		},
-		default: {
-			contact: [
-				{
-					phoneNumber: '',
-				},
-			],
-		},
+		default: {},
 		required: true,
-		description: 'The recipient phone numbers (up to 50 numbers, including country code)',
-		placeholder: 'Add phone number',
+		description: 'The recipient phone numbers (up to 50 numbers)',
 		options: [
 			{
-				displayName: 'Phone Number',
-				name: 'phoneNumber',
-				type: 'string',
-				default: '',
-				description: 'Phone number with country code',
-				placeholder: '+224623000000',
+				name: 'contact',
+				displayName: 'Contact',
+				values: [
+					{
+						displayName: 'Phone Number',
+						name: 'phoneNumber',
+						type: 'string',
+						default: '',
+						description: 'Phone number with country code',
+						placeholder: '+224623000000',
+					},
+				],
 			},
 		],
 	},
