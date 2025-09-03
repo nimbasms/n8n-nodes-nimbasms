@@ -64,6 +64,7 @@ export const smsFields: INodeProperties[] = [
 		typeOptions: {
 			loadOptionsMethod: 'getSenderNames',
 		},
+		options: [],
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -135,6 +136,7 @@ export const smsFields: INodeProperties[] = [
 		typeOptions: {
 			loadOptionsMethod: 'getSenderNames',
 		},
+		options: [],
 		displayOptions: {
 			show: {
 				resource: ['message'],
