@@ -18,21 +18,12 @@ export const purchaseOperations: INodeProperties[] = [
 				description: 'Get all purchase history',
 				action: 'Get all purchases',
 			},
-			{
-				name: 'Get',
-				value: 'get',
-				description: 'Get a specific purchase',
-				action: 'Get a purchase',
-			},
 		],
 		default: 'getAll',
 	},
 ];
 
 export const purchaseFields: INodeProperties[] = [
-	/* -------------------------------------------------------------------------- */
-	/*                                purchase:getAll                             */
-	/* -------------------------------------------------------------------------- */
 	{
 		displayName: 'Return All',
 		name: 'returnAll',
@@ -131,23 +122,4 @@ export const purchaseFields: INodeProperties[] = [
 			},
 		],
 	},
-
-	/* -------------------------------------------------------------------------- */
-	/*                                purchase:get                                */
-	/* -------------------------------------------------------------------------- */
-	{
-		displayName: 'Purchase UID',
-		name: 'purchaseUid',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['purchase'],
-				operation: ['get'],
-			},
-		},
-		default: '',
-		required: true,
-		description: 'The UID of the purchase to retrieve',
-		placeholder: '07cc67f4-45d6-494b-adac-09b5cbc7e2b5',
-	},
-]; 
+];

@@ -24,7 +24,6 @@ export const groupOperations: INodeProperties[] = [
 ];
 
 export const groupFields: INodeProperties[] = [
-
 	/* -------------------------------------------------------------------------- */
 	/*                                group:getAll                              */
 	/* -------------------------------------------------------------------------- */
@@ -98,5 +97,4 @@ export const groupFields: INodeProperties[] = [
 			},
 		],
 	},
-
 ];

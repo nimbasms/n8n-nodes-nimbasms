@@ -26,7 +26,7 @@ export class NimbaSmsApi implements ICredentialType {
 			default: '',
 			required: true,
 			description: 'Your Nimba SMS Secret Token',
-		}
+		},
 	];
 
 	authenticate: IAuthenticateGeneric = {

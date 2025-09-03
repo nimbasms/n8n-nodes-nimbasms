@@ -18,7 +18,7 @@ import {
 	validateMessage,
 } from './GenericFunctions';
 
-// Assurez-vous que tous ces imports existent et sont corrects
+
 import { contactOperations, contactFields } from './descriptions/ContactDescription';
 import { groupOperations, groupFields } from './descriptions/GroupDescription';
 import { smsOperations, smsFields } from './descriptions/SmsDescription';
@@ -33,7 +33,8 @@ export class NimbaSMS implements INodeType {
 		group: ['communication'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Send SMS, manage campaigns, and track delivery reports using the Nimba SMS API with ease.',
+		description:
+			'Send SMS, manage campaigns, and track delivery reports using the Nimba SMS API with ease.',
 		defaults: {
 			name: 'Nimba SMS',
 		},
@@ -46,7 +47,6 @@ export class NimbaSMS implements INodeType {
 			},
 		],
 		properties: [
-			// Resource selector
 			{
 				displayName: 'Resource',
 				name: 'resource',
@@ -86,8 +86,6 @@ export class NimbaSMS implements INodeType {
 				],
 				default: 'message',
 			},
-
-			// Combine all operations and fields from description files
 			...smsOperations,
 			...smsFields,
 			...contactOperations,
@@ -105,10 +103,10 @@ export class NimbaSMS implements INodeType {
 		loadOptions: {
 			async getSenderNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 				const returnData: INodePropertyOptions[] = [];
-    
+
 				try {
 					const response = await nimbaSmsApiRequest.call(this, 'GET', 'sendernames');
-					
+
 					if (response.results && Array.isArray(response.results)) {
 						for (const senderName of response.results) {
 							if (senderName.status === 'accepted') {
@@ -123,7 +121,7 @@ export class NimbaSMS implements INodeType {
 					console.error('Error loading sender names:', error);
 					return [];
 				}
-				
+
 				return returnData;
 			},
 		},
@@ -139,13 +137,10 @@ export class NimbaSMS implements INodeType {
 		for (let i = 0; i < length; i++) {
 			try {
 				if (resource === 'message') {
-					// SMS Operations
 					if (operation === 'send') {
 						const senderName = this.getNodeParameter('senderName', i) as string;
 						const contactsData = this.getNodeParameter('contact', i) as IDataObject;
 						const message = this.getNodeParameter('message', i) as string;
-
-						// Extract phone numbers from the fixedCollection
 						const contactList: string[] = [];
 						if (contactsData.contact && Array.isArray(contactsData.contact)) {
 							for (const contact of contactsData.contact as IDataObject[]) {
@@ -154,29 +149,39 @@ export class NimbaSMS implements INodeType {
 								}
 							}
 						}
-						
+
 						if (contactList.length === 0) {
-							throw new NodeOperationError(this.getNode(), 
-								`No valid contacts provided. Please provide at least one phone number.`, { itemIndex: i });
+							throw new NodeOperationError(
+								this.getNode(),
+								`No valid contacts provided. Please provide at least one phone number.`,
+								{ itemIndex: i },
+							);
 						}
 
 						if (contactList.length > 50) {
-							throw new NodeOperationError(this.getNode(), 
-								`Too many contacts. Maximum 50 contacts allowed.`, { itemIndex: i });
+							throw new NodeOperationError(
+								this.getNode(),
+								`Too many contacts. Maximum 50 contacts allowed.`,
+								{ itemIndex: i },
+							);
 						}
-
-						// Validate each phone number and format them
-						const formattedContacts = contactList.map(contact => {
+						const formattedContacts = contactList.map((contact) => {
 							if (!validatePhoneNumber(contact)) {
-								throw new NodeOperationError(this.getNode(), 
-									`Invalid phone number "${contact}". Please provide a valid phone number.`, { itemIndex: i });
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid phone number "${contact}". Please provide a valid phone number.`,
+									{ itemIndex: i },
+								);
 							}
 							return formatPhoneNumber(contact);
 						});
 
 						if (!validateMessage(message)) {
-							throw new NodeOperationError(this.getNode(), 
-								`Message too long. Maximum 665 characters allowed.`, { itemIndex: i });
+							throw new NodeOperationError(
+								this.getNode(),
+								`Message too long. Maximum 665 characters allowed.`,
+								{ itemIndex: i },
+							);
 						}
 
 						const body: IDataObject = {
@@ -187,29 +192,31 @@ export class NimbaSMS implements INodeType {
 
 						const responseData = await nimbaSmsApiRequest.call(this, 'POST', 'messages', body);
 						returnData.push(responseData);
-
 					} else if (operation === 'verification') {
 						const senderName = this.getNodeParameter('senderNameVerification', i) as string;
 						const to = this.getNodeParameter('to', i) as string;
 						const message = this.getNodeParameter('message', i) as string;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
-
-						// Validate phone number
 						if (!validatePhoneNumber(to)) {
-							throw new NodeOperationError(this.getNode(), 
-								`Invalid phone number "${to}". Please provide a valid phone number.`, { itemIndex: i });
+							throw new NodeOperationError(
+								this.getNode(),
+								`Invalid phone number "${to}". Please provide a valid phone number.`,
+								{ itemIndex: i },
+							);
 						}
-
-						// Validate message contains <1234> placeholder
 						if (!message.includes('<1234>')) {
-							throw new NodeOperationError(this.getNode(), 
-								`Message must contain <1234> placeholder for OTP code.`, { itemIndex: i });
+							throw new NodeOperationError(
+								this.getNode(),
+								`Message must contain <1234> placeholder for OTP code.`,
+								{ itemIndex: i },
+							);
 						}
-
-						// Validate message length
 						if (message.length > 153) {
-							throw new NodeOperationError(this.getNode(), 
-								`Message too long. Maximum 153 characters allowed for OTP verification.`, { itemIndex: i });
+							throw new NodeOperationError(
+								this.getNode(),
+								`Message too long. Maximum 153 characters allowed for OTP verification.`,
+								{ itemIndex: i },
+							);
 						}
 
 						const body: IDataObject = {
@@ -217,8 +224,6 @@ export class NimbaSMS implements INodeType {
 							message,
 							sender_name: senderName,
 						};
-
-						// Add optional fields
 						if (additionalFields.expiry_time) {
 							body.expiry_time = additionalFields.expiry_time;
 						}
@@ -231,7 +236,6 @@ export class NimbaSMS implements INodeType {
 
 						const responseData = await nimbaSmsApiRequest.call(this, 'POST', 'verifications', body);
 						returnData.push(responseData);
-
 					} else if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
@@ -246,7 +250,14 @@ export class NimbaSMS implements INodeType {
 						}
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', 'messages', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(
+								this,
+								'results',
+								'GET',
+								'messages',
+								{},
+								qs,
+							);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -257,22 +268,22 @@ export class NimbaSMS implements INodeType {
 							const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'messages', {}, qs);
 							returnData.push.apply(returnData, responseData.results || []);
 						}
-
 					} else if (operation === 'get') {
 						const smsId = this.getNodeParameter('smsId', i) as string;
 						const responseData = await nimbaSmsApiRequest.call(this, 'GET', `/messages/${smsId}`);
 						returnData.push(responseData);
 					}
-
 				} else if (resource === 'contact') {
-					// Contact Operations
 					if (operation === 'create') {
 						const numero = this.getNodeParameter('numero', i) as string;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
 
 						if (!validatePhoneNumber(numero)) {
-							throw new NodeOperationError(this.getNode(), 
-								`Invalid phone number "${numero}". Please provide a valid phone number.`, { itemIndex: i });
+							throw new NodeOperationError(
+								this.getNode(),
+								`Invalid phone number "${numero}". Please provide a valid phone number.`,
+								{ itemIndex: i },
+							);
 						}
 
 						const body: IDataObject = {
@@ -283,13 +294,14 @@ export class NimbaSMS implements INodeType {
 							body.name = additionalFields.name;
 						}
 						if (additionalFields.groups) {
-							const groups = (additionalFields.groups as string).split(',').map(group => group.trim());
+							const groups = (additionalFields.groups as string)
+								.split(',')
+								.map((group) => group.trim());
 							body.groups = groups;
 						}
 
 						const responseData = await nimbaSmsApiRequest.call(this, 'POST', 'contacts', body);
 						returnData.push(responseData);
-
 					} else if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const filters = this.getNodeParameter('filters', i) as IDataObject;
@@ -301,7 +313,14 @@ export class NimbaSMS implements INodeType {
 						}
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', 'contacts', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(
+								this,
+								'results',
+								'GET',
+								'contacts',
+								{},
+								qs,
+							);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -313,9 +332,7 @@ export class NimbaSMS implements INodeType {
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 					}
-
 				} else if (resource === 'group') {
-					// Group Operations
 					if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const filters = this.getNodeParameter('filters', i) as IDataObject;
@@ -330,7 +347,14 @@ export class NimbaSMS implements INodeType {
 						}
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', 'groups', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(
+								this,
+								'results',
+								'GET',
+								'groups',
+								{},
+								qs,
+							);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -342,16 +366,12 @@ export class NimbaSMS implements INodeType {
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 					}
-
 				} else if (resource === 'account') {
-					// Account Operations
 					if (operation === 'getBalance') {
 						const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'accounts');
 						returnData.push(responseData);
 					}
-
 				} else if (resource === 'purchase') {
-					// Purchase Operations
 					if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
@@ -369,7 +389,14 @@ export class NimbaSMS implements INodeType {
 						}
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', 'purchases', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(
+								this,
+								'results',
+								'GET',
+								'purchases',
+								{},
+								qs,
+							);
 							returnData.push.apply(returnData, responseData);
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
@@ -380,15 +407,8 @@ export class NimbaSMS implements INodeType {
 							const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'purchases', {}, qs);
 							returnData.push.apply(returnData, responseData.results || []);
 						}
-
-					} else if (operation === 'get') {
-						const purchaseUid = this.getNodeParameter('purchaseUid', i) as string;
-						const responseData = await nimbaSmsApiRequest.call(this, 'GET', `/purchases/${purchaseUid}`);
-						returnData.push(responseData);
 					}
-
 				} else if (resource === 'senderName') {
-					// Sender Name Operations
 					if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
@@ -396,20 +416,32 @@ export class NimbaSMS implements INodeType {
 						const qs: IDataObject = {};
 
 						if (returnAll) {
-							const responseData = await nimbaSmsApiRequestAllItems.call(this, 'results', 'GET', 'sendernames', {}, qs);
+							const responseData = await nimbaSmsApiRequestAllItems.call(
+								this,
+								'results',
+								'GET',
+								'sendernames',
+								{},
+								qs,
+							);
 							returnData.push.apply(returnData, responseData);
 						} else {
-							const limit = this.getNodeParameter('limit', i) as number;  
+							const limit = this.getNodeParameter('limit', i) as number;
 							qs.limit = limit;
 							if (additionalFields.offset) {
 								qs.offset = additionalFields.offset;
 							}
-							const responseData = await nimbaSmsApiRequest.call(this, 'GET', 'sendernames', {}, qs);
+							const responseData = await nimbaSmsApiRequest.call(
+								this,
+								'GET',
+								'sendernames',
+								{},
+								qs,
+							);
 							returnData.push.apply(returnData, responseData.results || []);
 						}
 					}
 				}
-
 			} catch (error) {
 				if (this.continueOnFail()) {
 					returnData.push({ error: (error as Error).message });

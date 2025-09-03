@@ -39,12 +39,24 @@ export const smsOperations: INodeProperties[] = [
 		],
 		default: 'send',
 	},
+
+	{
+		displayName: 'SMS ID',
+		name: 'smsId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['message'],
+				operation: ['get'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The ID of the SMS to retrieve',
+	},
 ];
 
 export const smsFields: INodeProperties[] = [
-	/* -------------------------------------------------------------------------- */
-	/*                                sms:send                                    */
-	/* -------------------------------------------------------------------------- */
 	{
 		displayName: 'Sender Name',
 		name: 'senderName',
@@ -116,10 +128,6 @@ export const smsFields: INodeProperties[] = [
 		description: 'The SMS message content (max 665 characters for concatenated SMS)',
 		placeholder: 'Your message content here...',
 	},
-
-	/* -------------------------------------------------------------------------- */
-	/*                                sms:verification                           */
-	/* -------------------------------------------------------------------------- */
 	{
 		displayName: 'Sender Name',
 		name: 'senderNameVerification',
@@ -315,9 +323,6 @@ export const smsFields: INodeProperties[] = [
 		],
 	},
 
-	/* -------------------------------------------------------------------------- */
-	/*                                sms:get                                    */
-	/* -------------------------------------------------------------------------- */
 	{
 		displayName: 'SMS ID',
 		name: 'smsId',

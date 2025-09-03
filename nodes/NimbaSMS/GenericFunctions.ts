@@ -63,7 +63,7 @@ export async function nimbaSmsApiRequestAllItems(
 
 	do {
 		responseData = await nimbaSmsApiRequest.call(this, method, endpoint, body, query);
-		
+
 		if (responseData[propertyName]) {
 			returnData.push.apply(returnData, responseData[propertyName]);
 		}
@@ -89,26 +89,16 @@ export function validatePhoneNumber(phone: string): boolean {
 export function formatPhoneNumber(phone: string): string {
 	// Remove all non-digit characters except +
 	let cleanPhone = phone.replace(/[^\d+]/g, '');
-	
-	// If it doesn't start with +, add Guinea country code
-	if (!cleanPhone.startsWith('+')) {
-		if (cleanPhone.startsWith('224')) {
-			cleanPhone = '+' + cleanPhone;
-		} else {
-			cleanPhone = '+224' + cleanPhone;
-		}
-	}
-	
+
+
 	return cleanPhone;
 }
 
 export function validateSenderName(senderName: string): boolean {
-	// Sender name should be max 11 characters, alphanumeric
 	return senderName.length <= 11 && /^[a-zA-Z0-9]+$/.test(senderName);
 }
 
 export function validateMessage(message: string): boolean {
-	// Message should be max 665 characters (up to 4 SMS concatenated)
 	return message.length <= 665;
 }
 
@@ -120,14 +110,14 @@ export interface IPaginationOptions {
 
 export function preparePaginationQuery(options: IPaginationOptions): IDataObject {
 	const query: IDataObject = {};
-	
+
 	if (options.returnAll) {
-		query.limit = 100; // Use reasonable default for pagination
+		query.limit = 100;
 		query.offset = 0;
 	} else {
 		query.limit = options.limit || 50;
 		query.offset = options.offset || 0;
 	}
-	
+
 	return query;
 }
