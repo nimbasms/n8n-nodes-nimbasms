@@ -40,11 +40,11 @@ describe('NimbaSMS Node - Couverture Complète', () => {
 
 	describe('Message Operations', () => {
 		describe('send operation', () => {
-			beforeEach(() => {
-				mockedGenericFunctions.validatePhoneNumber.mockReturnValue(true);
-				mockedGenericFunctions.formatPhoneNumber.mockImplementation((phone) => `+224${phone}`);
-				mockedGenericFunctions.validateMessage.mockReturnValue(true);
-			});
+					beforeEach(() => {
+			mockedGenericFunctions.validatePhoneNumber.mockReturnValue(true);
+			mockedGenericFunctions.formatPhoneNumber.mockImplementation((phone) => phone.replace(/[^\d+]/g, ''));
+			mockedGenericFunctions.validateMessage.mockReturnValue(true);
+		});
 
 			it('devrait envoyer un SMS avec succès', async () => {
 				const mockContactsData = {
@@ -68,7 +68,7 @@ describe('NimbaSMS Node - Couverture Complète', () => {
 					'messages',
 					{
 						sender_name: 'TestSender',
-						to: ['+224623000000'],
+						to: ['623000000'],
 						message: 'Test message',
 					},
 				);
@@ -325,7 +325,7 @@ describe('NimbaSMS Node - Couverture Complète', () => {
 					.mockReturnValueOnce({}); // additionalFields vide
 
 				mockedGenericFunctions.validatePhoneNumber.mockReturnValue(true);
-				mockedGenericFunctions.formatPhoneNumber.mockReturnValue('+224623000000');
+				mockedGenericFunctions.formatPhoneNumber.mockReturnValue('623000000');
 
 				const mockResponse = { id: 'contact-123' };
 				mockedGenericFunctions.nimbaSmsApiRequest.mockResolvedValue(mockResponse);
@@ -336,7 +336,7 @@ describe('NimbaSMS Node - Couverture Complète', () => {
 					'POST',
 					'contacts',
 					{
-						numero: '+224623000000',
+						numero: '623000000',
 					},
 				);
 			});

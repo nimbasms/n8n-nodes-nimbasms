@@ -63,23 +63,23 @@ describe('GenericFunctions', () => {
 	});
 
 	describe('formatPhoneNumber', () => {
-		it('devrait formater les numéros guinéens sans préfixe', () => {
-			expect(formatPhoneNumber('623000000')).toBe('+224623000000');
-			expect(formatPhoneNumber('62300000')).toBe('+22462300000');
+		it('devrait nettoyer les caractères non numériques tout en gardant les chiffres', () => {
+			expect(formatPhoneNumber('623000000')).toBe('623000000');
+			expect(formatPhoneNumber('62300000')).toBe('62300000');
 		});
 
-		it('devrait formater les numéros avec code pays sans +', () => {
-			expect(formatPhoneNumber('224623000000')).toBe('+224623000000');
+		it('devrait garder le code pays sans +', () => {
+			expect(formatPhoneNumber('224623000000')).toBe('224623000000');
 		});
 
-		it('devrait garder les numéros déjà formatés', () => {
+		it('devrait garder les numéros avec + déjà formatés', () => {
 			expect(formatPhoneNumber('+224623000000')).toBe('+224623000000');
 			expect(formatPhoneNumber('+33123456789')).toBe('+33123456789');
 		});
 
-		it('devrait nettoyer les caractères non numériques', () => {
+		it('devrait nettoyer les caractères non numériques en gardant +', () => {
 			expect(formatPhoneNumber('+224 623 00 00 00')).toBe('+224623000000');
-			expect(formatPhoneNumber('(224) 623-000-000')).toBe('+224623000000');
+			expect(formatPhoneNumber('(224) 623-000-000')).toBe('224623000000');
 		});
 	});
 
